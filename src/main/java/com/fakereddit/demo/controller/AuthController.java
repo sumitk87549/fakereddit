@@ -1,5 +1,7 @@
 package com.fakereddit.demo.controller;
 
+import com.fakereddit.demo.dto.AuthenticationResponse;
+import com.fakereddit.demo.dto.LoginRequest;
 import com.fakereddit.demo.dto.RegisterRequest;
 import com.fakereddit.demo.service.AuthService;
 import lombok.AllArgsConstructor;
@@ -41,5 +43,10 @@ public class AuthController {
             log.error("Error While verifying Account for token - "+token+"\n"+e);
             return new ResponseEntity<>("Unable to verify Account!",HttpStatus.CONFLICT);
         }
+    }
+
+    @PostMapping("/login")
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
+        return authService.login(loginRequest);
     }
 }
