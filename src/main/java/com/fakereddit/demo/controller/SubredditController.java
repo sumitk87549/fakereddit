@@ -1,6 +1,7 @@
 package com.fakereddit.demo.controller;
 
 import com.fakereddit.demo.dto.SubredditDto;
+import com.fakereddit.demo.model.Subreddit;
 import com.fakereddit.demo.service.SubredditService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,5 +26,10 @@ public class SubredditController {
     @GetMapping
     public ResponseEntity<List<SubredditDto>> getAllSubreddits(){
         return ResponseEntity.status(HttpStatus.OK).body(subredditService.getAllSubreddits());
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<SubredditDto> getSubreddit(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(subredditService.getSubreddit(id));
     }
 }
