@@ -23,7 +23,7 @@ public class SubredditService {
 
     @Transactional
     public SubredditDto save(SubredditDto subredditDto) {
-        Subreddit newlySavedSubreddit = subredditRepository.save(subredditMapper.mapSubredditDtoToModelSubreddit(subredditDto));
+        Subreddit newlySavedSubreddit = subredditRepository.save(subredditMapper.mapDtoToModel(subredditDto));
         subredditDto.setId(newlySavedSubreddit.getId());
         return subredditDto;
     }
@@ -31,11 +31,11 @@ public class SubredditService {
     @Transactional
     public List<SubredditDto> getAllSubreddits(){
         return subredditRepository.findAll().stream()
-                .map(subredditMapper::mapModelSubreddittoSubredditDto)
+                .map(subredditMapper::mapModelToDto)
                 .collect(Collectors.toList());
     }
 
     public SubredditDto getSubreddit(Long id) {
-        return subredditMapper.mapModelSubreddittoSubredditDto(subredditRepository.findById(id).orElseThrow(() -> new SubredditNotFoundException("No subreddit found for id- "+id)));
+        return subredditMapper.mapModelToDto(subredditRepository.findById(id).orElseThrow(() -> new SubredditNotFoundException("No subreddit found for id- "+id)));
     }
 }

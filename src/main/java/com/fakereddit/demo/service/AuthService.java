@@ -10,6 +10,7 @@ import com.fakereddit.demo.model.VerificationToken;
 import com.fakereddit.demo.repository.UserRepository;
 import com.fakereddit.demo.repository.VerificationTokenRepository;
 import com.fakereddit.demo.security.JwtProvider;
+import io.jsonwebtoken.Jwt;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +38,13 @@ public class AuthService {
     private final MailService mailService;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+
+    public User getCurrentUser(){
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("GET PRINCIPAL AUTHENTICATION ------>>>> "+ SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return  userRepository.findByUsername(principal.getUsername()).orElseThrow(()-> new UsernameNotFoundException("No user found for principal - "+principal));
+        //CHECK LATER MIGHT THROW ERROR
+    }
 
 
     public void signup(RegisterRequest request) {
