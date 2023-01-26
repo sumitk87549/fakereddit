@@ -1,7 +1,7 @@
 package com.fakereddit.demo.controller;
 
-import com.fakereddit.demo.dto.PostRequest;
-import com.fakereddit.demo.dto.PostResponse;
+import com.fakereddit.demo.dto.PostRequestDto;
+import com.fakereddit.demo.dto.PostResponseDto;
 import com.fakereddit.demo.model.Post;
 import com.fakereddit.demo.service.PostsService;
 import lombok.AllArgsConstructor;
@@ -19,27 +19,27 @@ public class PostsController {
     private final PostsService postsService;
 
     @GetMapping()
-    public ResponseEntity<List<PostResponse>> getAllPost(){
+    public ResponseEntity<List<PostResponseDto>> getAllPost(){
         return ResponseEntity.status(HttpStatus.OK).body(postsService.getAllPosts());
     }
 
     @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody PostRequest postRequest){
-        return ResponseEntity.status(HttpStatus.CREATED).body(postsService.save(postRequest));
+    public ResponseEntity<Post> createPost(@RequestBody PostRequestDto postRequestDto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(postsService.save(postRequestDto));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostResponse> getPost(@PathVariable Long id){
+    public ResponseEntity<PostResponseDto> getPost(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(postsService.getPost(id));
     }
 
     @GetMapping("/by_subreddit/{id}")
-    public ResponseEntity<List<PostResponse>> getPostsBySubreddit(@PathVariable Long id){
+    public ResponseEntity<List<PostResponseDto>> getPostsBySubreddit(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(postsService.getPostsBySubreddit(id));
     }
 
     @GetMapping("/by_username/{name}")
-    public ResponseEntity<List<PostResponse>> getPostsByUser(@PathVariable String username){
+    public ResponseEntity<List<PostResponseDto>> getPostsByUser(@PathVariable String username){
         return ResponseEntity.status(HttpStatus.OK).body(postsService.getPostsByUsername(username));
     }
 }

@@ -1,6 +1,5 @@
 package com.fakereddit.demo.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,12 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostRequest {
-
-    private Long postId;
-    private String subredditName;
-    private String postName;
-    private String url;
-    private String description;
+public class RegisterRequestDto {
+    private String email;
     private String username;
+    private String password;
 }

@@ -1,17 +1,14 @@
 package com.fakereddit.demo.controller;
 
-import com.fakereddit.demo.dto.AuthenticationResponse;
-import com.fakereddit.demo.dto.LoginRequest;
-import com.fakereddit.demo.dto.RegisterRequest;
+import com.fakereddit.demo.dto.AuthenticationResponseDto;
+import com.fakereddit.demo.dto.LoginRequestDto;
+import com.fakereddit.demo.dto.RegisterRequestDto;
 import com.fakereddit.demo.service.AuthService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -22,9 +19,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity signup(@RequestBody RegisterRequest registerRequest){
+    public ResponseEntity signup(@RequestBody RegisterRequestDto registerRequestDto){
         try{
-            authService.signup(registerRequest);
+            authService.signup(registerRequestDto);
             return new ResponseEntity<>("User Registration Successful", HttpStatus.CREATED);
         }catch(Exception e){
             e.printStackTrace();
@@ -46,7 +43,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
-        return authService.login(loginRequest);
+    public AuthenticationResponseDto login(@RequestBody LoginRequestDto loginRequestDto) {
+        return authService.login(loginRequestDto);
     }
 }

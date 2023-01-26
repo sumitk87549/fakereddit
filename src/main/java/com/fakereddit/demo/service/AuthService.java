@@ -1,8 +1,8 @@
 package com.fakereddit.demo.service;
 
-import com.fakereddit.demo.dto.AuthenticationResponse;
-import com.fakereddit.demo.dto.LoginRequest;
-import com.fakereddit.demo.dto.RegisterRequest;
+import com.fakereddit.demo.dto.AuthenticationResponseDto;
+import com.fakereddit.demo.dto.LoginRequestDto;
+import com.fakereddit.demo.dto.RegisterRequestDto;
 import com.fakereddit.demo.exceptions.SpringRedditException;
 import com.fakereddit.demo.model.NotificationEmail;
 import com.fakereddit.demo.model.User;
@@ -10,10 +10,8 @@ import com.fakereddit.demo.model.VerificationToken;
 import com.fakereddit.demo.repository.UserRepository;
 import com.fakereddit.demo.repository.VerificationTokenRepository;
 import com.fakereddit.demo.security.JwtProvider;
-import io.jsonwebtoken.Jwt;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -47,7 +45,7 @@ public class AuthService {
     }
 
 
-    public void signup(RegisterRequest request) {
+    public void signup(RegisterRequestDto request) {
         User user = new User();
         user.setEmail(request.getEmail());
         user.setUsername(request.getUsername());
@@ -83,11 +81,11 @@ public class AuthService {
         userRepository.save(userToBeActivated);
     }
 
-    public AuthenticationResponse login(LoginRequest loginRequest){
-        Authentication authenticationObject = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
+    public AuthenticationResponseDto login(LoginRequestDto loginRequestDto){
+        Authentication authenticationObject = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authenticationObject);
         String authenticationToken = jwtProvider.generateToken(authenticationObject);
-        return new AuthenticationResponse(authenticationToken, loginRequest.getUsername());
+        return new AuthenticationResponseDto(authenticationToken, loginRequestDto.getUsername());
     }
 
 }

@@ -1,8 +1,8 @@
 package com.fakereddit.demo.service;
 
 
-import com.fakereddit.demo.dto.PostRequest;
-import com.fakereddit.demo.dto.PostResponse;
+import com.fakereddit.demo.dto.PostRequestDto;
+import com.fakereddit.demo.dto.PostResponseDto;
 import com.fakereddit.demo.exceptions.SpringRedditException;
 import com.fakereddit.demo.exceptions.SubredditNotFoundException;
 import com.fakereddit.demo.mapper.PostMapper;
@@ -32,23 +32,23 @@ public class PostsService {
     private final AuthService authService;
     private final PostMapper postMapper;
 
-    public Post save(PostRequest postRequest) {
-        Subreddit subreddit = subredditRepository.findByName(postRequest.getSubredditName()).orElseThrow(()->new SubredditNotFoundException("Not subreddit found for post - "+postRequest));
+    public Post save(PostRequestDto postRequestDto) {
+        Subreddit subreddit = subredditRepository.findByName(postRequestDto.getSubredditName()).orElseThrow(()->new SubredditNotFoundException("Not subreddit found for post - "+ postRequestDto));
         User currentUser = authService.getCurrentUser();
-        return postRepository.save(postMapper.mapDtoToModel(postRequest,currentUser,subreddit));
+        return postRepository.save(postMapper.mapDtoToModel(postRequestDto,currentUser,subreddit));
     }
 
-    public PostResponse getPost(Long id) {
+    public PostResponseDto getPost(Long id) {
         return postMapper.mapModelToDto(postRepository.findById(id).orElseThrow(()->new SpringRedditException("No Post found for id - "+id)));
     }
 
-    public List<PostResponse> getAllPosts() {
+    public List<PostResponseDto> getAllPosts() {
         return postRepository.findAll().stream()
                 .map(postMapper::mapModelToDto)
                 .collect(Collectors.toList());
     }
 
-    public List<PostResponse> getPostsBySubreddit(Long id) {
+    public List<PostResponseDto> getPostsBySubreddit(Long id) {
         return postRepository
                 .findAllBySubreddit(
                         subredditRepository.findById(id).orElseThrow(()->new SubredditNotFoundException("No subreddit found for Id- "+id)))
@@ -57,7 +57,7 @@ public class PostsService {
                 .collect(Collectors.toList());
     }
 
-    public List<PostResponse> getPostsByUsername(String username) {
+    public List<PostResponseDto> getPostsByUsername(String username) {
         return postRepository
                 .findByUser(
                         userRepository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException("No user found for username- " +username)))
