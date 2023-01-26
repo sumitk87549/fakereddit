@@ -6,17 +6,29 @@ import com.fakereddit.demo.dto.PostResponseDto;
 import com.fakereddit.demo.model.Post;
 import com.fakereddit.demo.model.Subreddit;
 import com.fakereddit.demo.model.User;
+import com.fakereddit.demo.repository.CommentRepository;
+import com.fakereddit.demo.repository.VoteRepository;
+import com.fakereddit.demo.service.AuthService;
+import com.github.marlonlom.utilities.timeago.TimeAgo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
-public interface PostMapper {
+public abstract class PostMapper {
+    @Autowired
+    private CommentRepository commentRepository;
+    @Autowired
+    private VoteRepository voteRepository;
+    @Autowired
+    private AuthService authService;
 
     @Mapping(source = "user",target = "user")
     @Mapping(source = "subreddit",target = "subreddit")
     @Mapping(expression = "java(java.time.Instant.now())",target = "createdDate")
     @Mapping(source = "postRequestDto.description",target = "description")
-    Post mapDtoToModel(PostRequestDto postRequestDto, User user, Subreddit subreddit);
+    @Mapping(constant = "0",target = "voteCount")
+    public abstract Post mapDtoToModel(PostRequestDto postRequestDto, User user, Subreddit subreddit);
 
     @Mapping(source = "postId",target = "id")
     @Mapping(source = "postName",target = "postName")
@@ -24,24 +36,25 @@ public interface PostMapper {
     @Mapping(source = "description",target = "description")
     @Mapping(source = "subreddit.name",target = "subredditName")
     @Mapping(source = "user.username",target = "username")
-    PostResponseDto mapModelToDto(Post post);
+    @Mapping(expression = "java(commentsCount(post))",target = "commentCount")
+    @Mapping(expression = "java(getDuration(post))",target = "duration")
+    @Mapping(expression = "java(getVoteCount(post.getVoteCount()))",target = "voteCount")
+    public abstract PostResponseDto mapModelToDto(Post post);
 
-//
-//    @Mapping(target = "createdDate",expression = "java(java.time.Instant.now())")
-////    @Mapping(target = "description",source = "postRequest.description")
-//    @Mapping(target = "description",source = "postRequest.description") //CHECK LATER MIGHT GIVE FUNCTIONAL ERROR
-//    @Mapping(target = "subreddit", source = "subreddit")
-//    @Mapping(target = "user", source = "user")
-//    Post map(PostRequestDto postRequest, Subreddit subreddit, User user);
-//
-//    @Mapping(target = "id",source = "postId")
-//    @Mapping(target = "postName",source = "postName")
-//    @Mapping(target = "description",source = "description")
-//    @Mapping(target = "url",source = "url")
-//    @Mapping(target = "subredditName",source = "subreddit.name")
-//    @Mapping(target = "username",source = "user.username")
-//    PostResponseDto map(Post post);
+    Integer commentsCount(Post post){
+        return commentRepository.findAllByPost(post).size();
 
+    }
+    Integer getVoteCount(Integer voteCount){
+        if(voteCount == null)
+            return 0;
+        else
+            return voteCount;
 
+    }
+
+    String getDuration(Post post){
+        return TimeAgo.using(post.getCreatedDate().toEpochMilli());
+    }
 
 }
