@@ -2,13 +2,18 @@ package com.fakereddit.demo.controller;
 
 import com.fakereddit.demo.dto.AuthenticationResponseDto;
 import com.fakereddit.demo.dto.LoginRequestDto;
+import com.fakereddit.demo.dto.RefreshTokenRequestDto;
 import com.fakereddit.demo.dto.RegisterRequestDto;
 import com.fakereddit.demo.service.AuthService;
+import com.fakereddit.demo.service.RefreshTokenService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/signup")
     public ResponseEntity signup(@RequestBody RegisterRequestDto registerRequestDto){
@@ -45,5 +51,16 @@ public class AuthController {
     @PostMapping("/login")
     public AuthenticationResponseDto login(@RequestBody LoginRequestDto loginRequestDto) {
         return authService.login(loginRequestDto);
+    }
+
+    @PostMapping("refresh/token")
+    public AuthenticationResponseDto refreshTokens(@Valid @RequestBody RefreshTokenRequestDto refreshTokenRequestDto){
+        return authService.refreshToken(refreshTokenRequestDto);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequestDto refreshTokenRequestDto){
+        refreshTokenService.deleteRefreshedToken(refreshTokenRequestDto.getRefreshToken());
+        return ResponseEntity.status(OK).body("Refresh Token Deleted... User Successfully logged out!!!");
     }
 }

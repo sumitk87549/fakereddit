@@ -2,6 +2,7 @@ package com.fakereddit.demo.service;
 
 import com.fakereddit.demo.dto.AuthenticationResponseDto;
 import com.fakereddit.demo.dto.LoginRequestDto;
+import com.fakereddit.demo.dto.RefreshTokenRequestDto;
 import com.fakereddit.demo.dto.RegisterRequestDto;
 import com.fakereddit.demo.exceptions.SpringRedditException;
 import com.fakereddit.demo.model.NotificationEmail;
@@ -36,6 +37,7 @@ public class AuthService {
     private final MailService mailService;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
     public User getCurrentUser(){
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -53,7 +55,6 @@ public class AuthService {
         user.setCreated(Instant.now());
         user.setEnabled(false);
         userRepository.save(user);
-
         String token = generateVerificationToken(user);
         mailService.sendEmail(new NotificationEmail("Please Activate your Account.",user.getEmail(),"Thank you for signing up to Spring Reddit, " +
                 "please click on the below url to activate your account : " +
@@ -85,7 +86,21 @@ public class AuthService {
         Authentication authenticationObject = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authenticationObject);
         String authenticationToken = jwtProvider.generateToken(authenticationObject);
-        return new AuthenticationResponseDto(authenticationToken, loginRequestDto.getUsername());
+        return AuthenticationResponseDto.builder()
+                .authenticationToken(authenticationToken)
+                .username(loginRequestDto.getUsername())
+                .refreshToken(refreshTokenService.generateRefreshToken().getToken())
+                .expirationTime(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .build();
     }
 
+    public AuthenticationResponseDto refreshToken(RefreshTokenRequestDto refreshTokenRequestDto) {
+        refreshTokenService.validateRefreshedToken(refreshTokenRequestDto.getRefreshToken());
+        return AuthenticationResponseDto.builder()
+                .username(refreshTokenRequestDto.getUsername())
+                .authenticationToken(jwtProvider.generateTokenWithUsername(refreshTokenRequestDto.getUsername()))
+                .refreshToken(refreshTokenRequestDto.getRefreshToken())
+                .expirationTime(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .build();
+    }
 }
