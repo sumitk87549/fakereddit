@@ -35,21 +35,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 //        http.httpBasic().disable();
+//        http.csrf().disable().authorizeRequests().anyRequest().permitAll();
         http.cors().and().csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/home/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/subreddit").permitAll()
+                        .requestMatchers("/swagger-ui/**",
+                                "/swagger-ui*/**",
+                                "/v3/api-docs/**",
+                                "/configuration/ui",
+                                "/swagger-resources/**",
+                                "/configuration/security",
+                                "/swagger-ui.html",
+                                "/webjars/**"
+                                ).permitAll()
                         .anyRequest().authenticated()
                 );
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
-//    @Bean
-//    AuthenticationManager authenticationManager(AuthenticationManagerBuilder managerBuilder) throws Exception {
-//        return managerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder()).and().build();
-//    }
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
