@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
@@ -23,6 +24,7 @@ import java.util.Date;
 import static io.jsonwebtoken.Jwts.parser;
 
 @Service
+@Slf4j
 public class JwtProvider {
     private static final String ENCRYPTION_KEY = "28482B4D6251655468576D5A7134743777397A24432646294A404E635266556A";
 
@@ -36,10 +38,15 @@ public class JwtProvider {
     }
 
     public boolean validateToken(String jwtToken){
-        parser()
-                .setSigningKey(getPrivateKey())
-                .parseClaimsJws(jwtToken).getBody();
-        return true;
+        try {
+            parser().setSigningKey(getPrivateKey())
+                    .parseClaimsJws(jwtToken).getBody();
+            return true;
+        } catch (Exception e) {
+            log.error("Unable to verify jwt token - " + jwtToken);
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public String generateToken(Authentication authentication){
