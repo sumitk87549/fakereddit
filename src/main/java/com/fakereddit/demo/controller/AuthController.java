@@ -6,6 +6,7 @@ import com.fakereddit.demo.dto.RefreshTokenRequestDto;
 import com.fakereddit.demo.dto.RegisterRequestDto;
 import com.fakereddit.demo.service.AuthService;
 import com.fakereddit.demo.service.RefreshTokenService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,11 +55,13 @@ public class AuthController {
     }
 
     @PostMapping("refresh/token")
+    @SecurityRequirement(name = "JWT Bearer Authentication")
     public AuthenticationResponseDto refreshTokens(@Valid @RequestBody RefreshTokenRequestDto refreshTokenRequestDto){
         return authService.refreshToken(refreshTokenRequestDto);
     }
 
     @PostMapping("/logout")
+    @SecurityRequirement(name = "JWT Bearer Authentication")
     public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequestDto refreshTokenRequestDto){
         refreshTokenService.deleteRefreshedToken(refreshTokenRequestDto.getRefreshToken());
         return ResponseEntity.status(OK).body("Refresh Token Deleted... User Successfully logged out!!!");

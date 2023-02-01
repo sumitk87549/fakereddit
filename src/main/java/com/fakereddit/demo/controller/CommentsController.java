@@ -3,6 +3,7 @@ package com.fakereddit.demo.controller;
 import com.fakereddit.demo.dto.CommentsDto;
 import com.fakereddit.demo.repository.CommentRepository;
 import com.fakereddit.demo.service.CommentsService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 @RequestMapping("/api/comments")
 @Slf4j
+@SecurityRequirement(name = "JWT Bearer Authentication")
 public class CommentsController {
     private final CommentsService commentsService;
 

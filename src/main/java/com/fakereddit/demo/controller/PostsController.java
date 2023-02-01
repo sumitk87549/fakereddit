@@ -4,6 +4,8 @@ import com.fakereddit.demo.dto.PostRequestDto;
 import com.fakereddit.demo.dto.PostResponseDto;
 import com.fakereddit.demo.model.Post;
 import com.fakereddit.demo.service.PostsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/posts/")
+@SecurityRequirement(name = "JWT Bearer Authentication")
 public class PostsController {
     private final PostsService postsService;
 

@@ -3,6 +3,7 @@ package com.fakereddit.demo.controller;
 import com.fakereddit.demo.dto.VoteDto;
 import com.fakereddit.demo.model.Vote;
 import com.fakereddit.demo.service.VoteService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/votes/")
 @AllArgsConstructor
+@SecurityRequirement(name = "JWT Bearer Authentication")
 public class VoteController {
     private final VoteService voteService;
 
