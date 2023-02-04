@@ -42,7 +42,7 @@ public class PostsController {
     }
 
     @GetMapping("/by_username/{name}")
-    public ResponseEntity<List<PostResponseDto>> getPostsByUser(@PathVariable String username){
-        return ResponseEntity.status(HttpStatus.OK).body(postsService.getPostsByUsername(username));
+    public ResponseEntity<List<PostResponseDto>> getPostsByUser(@PathVariable String name){
+        return ResponseEntity.status(HttpStatus.OK).body(postsService.getPostsByUsername(name));
     }
 }

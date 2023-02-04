@@ -40,7 +40,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/home/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/subreddit").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/subreddit").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/posts/").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/posts/**").permitAll()
+//                        .requestMatchers("/api/subreddit").permitAll()
                         .requestMatchers("/swagger-ui/**",
                                 "/swagger-ui*/**",
                                 "/v3/api-docs/**",
