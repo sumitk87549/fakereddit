@@ -1,5 +1,6 @@
 package com.fakereddit.demo.service;
 
+import com.fakereddit.demo.config.AppConfig;
 import com.fakereddit.demo.dto.AuthenticationResponseDto;
 import com.fakereddit.demo.dto.LoginRequestDto;
 import com.fakereddit.demo.dto.RefreshTokenRequestDto;
@@ -39,6 +40,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
+    private final AppConfig appConfig;
 
     public User getCurrentUser(){
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -59,7 +61,7 @@ public class AuthService {
         String token = generateVerificationToken(user);
         mailService.sendEmail(new NotificationEmail("Please Activate your Account.",user.getEmail(),"Thank you for signing up to Fake Reddit, " +
                 "please click on the below url to activate your account : " +
-                "http://localhost:8080/api/auth/accountVerification/" + token));
+                appConfig.getUrl() + "/api/auth/accountVerification/" + token));
     }
 
     private String generateVerificationToken(User user){
