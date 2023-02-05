@@ -125,7 +125,6 @@
 			<artifactId>kotlin-stdlib-jdk8</artifactId>
 			<version>1.8.0</version>
 		</dependency>
-		<!-- Springdoc-openapi and openapi-security dependencies -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
@@ -205,7 +204,7 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>1.18.8</version>
+							<version>1.18.22</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
