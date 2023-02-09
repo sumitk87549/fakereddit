@@ -10,9 +10,11 @@ import org.springframework.stereotype.Component;
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "app")
 public class AppConfig {
-
     @NotNull
     private String url;
+
+    @NotNull
+    private String siteurl;
 
     public String getUrl() {
         return url;
@@ -20,5 +22,13 @@ public class AppConfig {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getSiteurl() {
+        return siteurl;
+    }
+
+    public void setSiteurl(String siteurl) {
+        this.siteurl = siteurl;
     }
 }

@@ -59,9 +59,8 @@ public class AuthService {
         user.setEnabled(false);
         userRepository.save(user);
         String token = generateVerificationToken(user);
-        mailService.sendEmail(new NotificationEmail("Please Activate your Account.",user.getEmail(),"Thank you for signing up to Fake Reddit, " +
-                "please click on the below url to activate your account : " +
-                appConfig.getUrl() + "/api/auth/accountVerification/" + token));
+        String verificationUrl = appConfig.getUrl() + "/api/auth/accountVerification/" + token;
+        mailService.sendEmail(new NotificationEmail("FakeReddit- Activate your Account.",user.getEmail(),mailService.getHtmlTemplate(verificationUrl,appConfig.getSiteurl())));
     }
 
     private String generateVerificationToken(User user){
